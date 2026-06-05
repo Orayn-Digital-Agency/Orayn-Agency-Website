@@ -1,0 +1,74 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply font-inter text-orayn-text antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-sora;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #EEF2F7;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #D0D9E8;
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #1B2A4A;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 bg-orayn-navy text-white font-inter text-sm font-semibold rounded-orayn transition-all duration-200 hover:bg-orayn-dark hover:ring-2 hover:ring-orayn-gold focus:outline-none focus:ring-2 focus:ring-orayn-gold focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 bg-transparent text-orayn-navy border border-orayn-navy font-inter text-sm font-semibold rounded-orayn transition-all duration-200 hover:bg-orayn-light focus:outline-none focus:ring-2 focus:ring-orayn-navy focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2 text-orayn-navy font-inter text-sm font-medium rounded-orayn transition-all duration-200 hover:bg-orayn-light focus:outline-none focus:ring-2 focus:ring-orayn-navy focus:ring-offset-1;
+  }
+
+  .card {
+    @apply bg-white border border-orayn-mid rounded-orayn-card p-6 shadow-orayn-card;
+  }
+
+  .input-field {
+    @apply w-full bg-white border border-orayn-mid rounded-orayn px-4 py-3 font-inter text-sm text-orayn-text placeholder:text-orayn-gray focus:outline-none focus:ring-2 focus:ring-orayn-gold focus:border-transparent transition-all duration-200;
+  }
+
+  .input-error {
+    @apply border-orayn-red focus:ring-orayn-red;
+  }
+
+  .label {
+    @apply block font-inter text-sm font-semibold text-orayn-text mb-1.5;
+  }
+
+  .section-heading {
+    @apply font-sora text-3xl md:text-4xl font-bold text-orayn-navy;
+  }
+
+  .section-subheading {
+    @apply font-inter text-base md:text-lg text-orayn-gray max-w-2xl;
+  }
+}
