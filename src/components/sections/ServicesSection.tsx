@@ -1,153 +1,168 @@
-'use client'
-
-import { motion } from 'framer-motion'
-import { useInView } from 'framer-motion'
-import { useRef } from 'react'
-import { Globe, Smartphone, LayoutDashboard, Zap, ArrowRight } from 'lucide-react'
+import { Globe, Smartphone, Layers, Zap } from 'lucide-react'
 
 const SERVICES = [
   {
-    icon:        Globe,
-    title:       'Website Design & Development',
+    Icon: Globe,
+    tier: 'Starter — Business',
+    title: 'Website Design & Development',
     description:
-      'Professional, mobile-first, SEO-ready websites built in React and Next.js. Every site is custom-coded from the ground up — no page builders, no generic templates.',
-    stack:       ['React', 'Next.js', 'Tailwind CSS'],
+      'Production-grade websites built with Next.js, TypeScript, and Tailwind CSS. Mobile-first, SEO-optimised, fast by default. No WordPress. No templates. No shortcuts.',
+    features: [
+      'Custom React / Next.js 15 codebase',
+      'Mobile-first responsive layout',
+      'On-page SEO and metadata',
+      'Contact forms with email delivery',
+      'Google Maps and WhatsApp integration',
+      'Hosted on Vercel — 99.9% uptime',
+    ],
+    price: '₦200,000',
+    priceSuffix: '— ₦500,000',
+    tag: 'Most Popular',
   },
   {
-    icon:        Smartphone,
-    title:       'Mobile App Development',
+    Icon: Smartphone,
+    tier: 'Premium',
+    title: 'Mobile App Development',
     description:
-      'Android and iOS applications published to Google Play and the App Store. Built with React Native or Flutter depending on project requirements.',
-    stack:       ['React Native', 'Flutter', 'Google Play', 'App Store'],
+      'Cross-platform Android and iOS applications built with React Native and Expo. Submitted to Google Play and the App Store. One codebase. Two platforms.',
+    features: [
+      'React Native with Expo',
+      'Android and iOS from one codebase',
+      'Google Play and App Store submission',
+      'Push notifications (Expo/FCM)',
+      'Supabase backend with real-time sync',
+      'Authentication and user profiles',
+    ],
+    price: '₦600,000',
+    priceSuffix: '— ₦1,000,000',
+    tag: null,
   },
   {
-    icon:        LayoutDashboard,
-    title:       'Web App & SaaS Engineering',
+    Icon: Layers,
+    tier: 'Platform',
+    title: 'Web App & SaaS Development',
     description:
-      'Full-stack web applications with authentication, dashboards, real-time features, and databases. Scalable architecture built for production from day one.',
-    stack:       ['Next.js', 'Supabase', 'Node.js', 'PostgreSQL'],
+      'Full-stack web applications with dashboards, user portals, payment integration, and admin panels. Built for businesses that need software, not just a website.',
+    features: [
+      'Full-stack Next.js with App Router',
+      'Supabase PostgreSQL with RLS policies',
+      'Paystack payment integration',
+      'Multi-role authentication system',
+      'Admin and agent dashboards',
+      'Realtime data with Supabase subscriptions',
+    ],
+    price: '₦1,500,000+',
+    priceSuffix: 'quoted per project',
+    tag: 'Enterprise',
   },
   {
-    icon:        Zap,
-    title:       'Automation & AI Agents',
+    Icon: Zap,
+    tier: 'Add-on / Standalone',
+    title: 'n8n Automation & AI Agents',
     description:
-      'Custom n8n workflows and AI agent systems that replace repetitive business tasks — from lead generation to customer communication. One-time build, ongoing value.',
-    stack:       ['n8n', 'GPT-4o', 'Claude API', 'Webhooks'],
+      'Workflow automation that replaces repetitive manual tasks — lead pipelines, contract generation, CRM sync, AI-powered communication, and more. One-time setup fee.',
+    features: [
+      'n8n Cloud workflow architecture',
+      'Telegram and WhatsApp bots',
+      'Supabase database triggers',
+      'AI integration (OpenAI / Claude)',
+      'Google Sheets / Drive automation',
+      'PDF generation and delivery',
+    ],
+    price: '₦150,000+',
+    priceSuffix: 'per workflow',
+    tag: null,
   },
 ] as const
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.12 },
-  },
-}
-
-const cardVariants = {
-  hidden:   { opacity: 0, y: 32 },
-  visible:  { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] } },
-}
-
 export default function ServicesSection() {
-  const ref = useRef<HTMLDivElement>(null)
-  const isInView = useInView(ref, { once: true, margin: '-80px' })
-
   return (
-    <section id="services" className="py-24 bg-white" aria-label="Services">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <motion.div
-          className="max-w-2xl"
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-60px' }}
-          transition={{ duration: 0.55 }}
-        >
-          <span className="font-inter text-xs font-semibold text-orayn-gold uppercase tracking-widest">
-            What We Build
-          </span>
-          <h2 className="mt-3 section-heading">
-            Four Service Lines. All Custom-Built.
+    <section id="services" className="relative bg-orayn-darker py-28 lg:py-36">
+      {/* Subtle top divider */}
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" aria-hidden="true" />
+
+      <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-10">
+
+        {/* Section header */}
+        <div className="max-w-2xl mb-16 lg:mb-20">
+          <div className="flex items-center gap-3 mb-5">
+            <div className="w-5 h-px bg-orayn-gold" aria-hidden="true" />
+            <span className="section-eyebrow">What We Build</span>
+          </div>
+          <h2 className="font-sora text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight mb-5">
+            Four Service Tiers.{' '}
+            <span className="text-orayn-gold">One Standard.</span>
           </h2>
-          <p className="mt-4 section-subheading">
-            Every deliverable is written from scratch to your exact requirements. We do not use templates, drag-and-drop builders, or off-the-shelf components.
+          <p className="font-inter text-base text-white/50 leading-relaxed">
+            Every engagement uses production-grade tooling, clean code architecture,
+            and real-world deployment. The tier changes. The standard does not.
           </p>
-        </motion.div>
+        </div>
 
-        {/* Cards */}
-        <motion.div
-          ref={ref}
-          className="mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
-          variants={containerVariants}
-          initial="hidden"
-          animate={isInView ? 'visible' : 'hidden'}
-        >
-          {SERVICES.map((service) => {
-            const Icon = service.icon
-            return (
-              <motion.div
-                key={service.title}
-                variants={cardVariants}
-                className="card group hover:border-orayn-gold/40 hover:shadow-lg transition-all duration-300 flex flex-col"
-              >
-                {/* Icon */}
-                <div className="w-11 h-11 rounded-orayn bg-orayn-navy/8 flex items-center justify-center flex-shrink-0 group-hover:bg-orayn-navy transition-colors duration-300">
-                  <Icon
-                    size={22}
-                    className="text-orayn-navy group-hover:text-orayn-gold transition-colors duration-300"
-                    aria-hidden="true"
-                  />
+        {/* Service cards grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+          {SERVICES.map(({ Icon, tier, title, description, features, price, priceSuffix, tag }) => (
+            <div
+              key={title}
+              className="relative group flex flex-col bg-white/[0.025] border border-white/[0.07] rounded-orayn-card p-8
+                         hover:border-orayn-gold/30 hover:bg-white/[0.04]
+                         transition-all duration-300"
+            >
+              {/* Tag */}
+              {tag && (
+                <span className="absolute top-6 right-6 tag text-[10px]">{tag}</span>
+              )}
+
+              {/* Icon + tier */}
+              <div className="flex items-start gap-4 mb-6">
+                <div className="flex-shrink-0 w-11 h-11 rounded-sm bg-orayn-gold/10 border border-orayn-gold/20 flex items-center justify-center group-hover:bg-orayn-gold/15 transition-colors duration-300">
+                  <Icon size={20} className="text-orayn-gold" aria-hidden="true" />
                 </div>
+                <div>
+                  <span className="font-mono text-[10px] text-white/30 uppercase tracking-widest block mb-0.5">{tier}</span>
+                  <h3 className="font-sora text-lg font-bold text-white leading-snug">{title}</h3>
+                </div>
+              </div>
 
-                {/* Content */}
-                <h3 className="mt-5 font-sora text-base font-semibold text-orayn-navy leading-snug">
-                  {service.title}
-                </h3>
-                <p className="mt-2.5 font-inter text-sm text-orayn-gray leading-relaxed flex-1">
-                  {service.description}
-                </p>
+              {/* Description */}
+              <p className="font-inter text-sm text-white/50 leading-relaxed mb-7">{description}</p>
 
-                {/* Stack tags */}
-                <div className="mt-5 flex flex-wrap gap-1.5">
-                  {service.stack.map((tech) => (
-                    <span
-                      key={tech}
-                      className="px-2 py-0.5 rounded bg-orayn-light font-inter text-xs font-medium text-orayn-gray"
-                    >
-                      {tech}
+              {/* Feature list */}
+              <ul className="flex flex-col gap-2.5 mb-8 flex-1">
+                {features.map((f) => (
+                  <li key={f} className="flex items-start gap-2.5">
+                    <span className="flex-shrink-0 mt-1 w-3.5 h-3.5 rounded-sm bg-orayn-gold/10 border border-orayn-gold/25 flex items-center justify-center">
+                      <svg width="7" height="5" viewBox="0 0 7 5" fill="none" aria-hidden="true">
+                        <path d="M1 2.5L2.8 4.3L6 1" stroke="#C49A28" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
                     </span>
-                  ))}
-                </div>
+                    <span className="font-inter text-xs text-white/55 leading-relaxed">{f}</span>
+                  </li>
+                ))}
+              </ul>
 
-                {/* Learn more */}
-                <a
-                  href="#contact"
-                  className="mt-5 inline-flex items-center gap-1.5 font-inter text-sm font-semibold text-orayn-navy hover:text-orayn-gold transition-colors duration-200 group/link"
-                  aria-label={`Learn more about ${service.title}`}
-                >
-                  Learn More
-                  <ArrowRight
-                    size={14}
-                    className="transition-transform duration-200 group-hover/link:translate-x-1"
-                    aria-hidden="true"
-                  />
+              {/* Price footer */}
+              <div className="flex items-end justify-between pt-6 border-t border-white/[0.07]">
+                <div>
+                  <span className="font-sora text-xl font-bold text-orayn-gold">{price}</span>
+                  <span className="font-inter text-xs text-white/30 ml-2">{priceSuffix}</span>
+                </div>
+                <a href="#contact" className="inline-flex items-center gap-1.5 font-inter text-xs font-semibold text-white/50 hover:text-orayn-gold transition-colors duration-200">
+                  Enquire
+                  <svg width="12" height="10" viewBox="0 0 12 10" fill="none" aria-hidden="true">
+                    <path d="M1 5h10M7 1l4 4-4 4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
                 </a>
-              </motion.div>
-            )
-          })}
-        </motion.div>
+              </div>
+            </div>
+          ))}
+        </div>
 
         {/* Bottom note */}
-        <motion.p
-          className="mt-10 font-inter text-sm text-orayn-gray text-center"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.3 }}
-        >
-          Orayn does not offer SEO management, social media management, Google Ads, or content marketing.
-        </motion.p>
+        <p className="mt-10 font-inter text-xs text-white/25 text-center">
+          All projects include hosting setup, source code handover, and a 30-day post-launch support window.
+          Prices are indicative. Exact quotes are issued after a project brief.
+        </p>
       </div>
     </section>
   )

@@ -1,3 +1,9 @@
+html,
+body {
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -11,7 +17,12 @@
     @apply font-inter text-orayn-text antialiased;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     @apply font-sora;
   }
 
@@ -19,56 +30,163 @@
     box-sizing: border-box;
   }
 
-  /* Custom scrollbar */
   ::-webkit-scrollbar {
-    width: 6px;
+    width: 5px;
   }
   ::-webkit-scrollbar-track {
-    background: #EEF2F7;
+    background: #0f1b2d;
   }
   ::-webkit-scrollbar-thumb {
-    background: #D0D9E8;
-    border-radius: 3px;
+    background: #c49a28;
+    border-radius: 2px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: #1B2A4A;
+    background: #d4aa38;
   }
 }
 
 @layer components {
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 px-6 py-3 bg-orayn-navy text-white font-inter text-sm font-semibold rounded-orayn transition-all duration-200 hover:bg-orayn-dark hover:ring-2 hover:ring-orayn-gold focus:outline-none focus:ring-2 focus:ring-orayn-gold focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply inline-flex items-center justify-center gap-2.5 px-7 py-3.5
+           bg-orayn-gold text-orayn-dark font-inter text-sm font-bold
+           rounded-sm tracking-wide uppercase
+           transition-all duration-200
+           hover:bg-yellow-400
+           focus:outline-none focus:ring-2 focus:ring-orayn-gold focus:ring-offset-2 focus:ring-offset-orayn-dark
+           disabled:opacity-40 disabled:cursor-not-allowed;
   }
 
-  .btn-secondary {
-    @apply inline-flex items-center justify-center gap-2 px-6 py-3 bg-transparent text-orayn-navy border border-orayn-navy font-inter text-sm font-semibold rounded-orayn transition-all duration-200 hover:bg-orayn-light focus:outline-none focus:ring-2 focus:ring-orayn-navy focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
+  .btn-outline {
+    @apply inline-flex items-center justify-center gap-2.5 px-7 py-3.5
+           bg-transparent text-white border border-white/25 font-inter text-sm font-semibold
+           rounded-sm tracking-wide
+           transition-all duration-200
+           hover:border-orayn-gold hover:text-orayn-gold
+           focus:outline-none focus:ring-2 focus:ring-orayn-gold focus:ring-offset-2 focus:ring-offset-orayn-dark
+           disabled:opacity-40 disabled:cursor-not-allowed;
   }
 
-  .btn-ghost {
-    @apply inline-flex items-center justify-center gap-2 px-4 py-2 text-orayn-navy font-inter text-sm font-medium rounded-orayn transition-all duration-200 hover:bg-orayn-light focus:outline-none focus:ring-2 focus:ring-orayn-navy focus:ring-offset-1;
-  }
-
-  .card {
-    @apply bg-white border border-orayn-mid rounded-orayn-card p-6 shadow-orayn-card;
+  .btn-navy {
+    @apply inline-flex items-center justify-center gap-2.5 px-7 py-3.5
+           bg-orayn-navy text-white font-inter text-sm font-bold
+           rounded-sm tracking-wide uppercase
+           transition-all duration-200
+           hover:bg-orayn-dark
+           focus:outline-none focus:ring-2 focus:ring-orayn-navy focus:ring-offset-2
+           disabled:opacity-40 disabled:cursor-not-allowed;
   }
 
   .input-field {
-    @apply w-full bg-white border border-orayn-mid rounded-orayn px-4 py-3 font-inter text-sm text-orayn-text placeholder:text-orayn-gray focus:outline-none focus:ring-2 focus:ring-orayn-gold focus:border-transparent transition-all duration-200;
+    @apply w-full bg-white/5 border border-white/10 rounded-sm px-4 py-3.5
+           font-inter text-sm text-white placeholder:text-white/30
+           focus:outline-none focus:ring-1 focus:ring-orayn-gold focus:border-orayn-gold
+           transition-all duration-200;
+    color-scheme: dark;
+  }
+
+  .input-field-light {
+    @apply w-full bg-white border border-orayn-mid rounded-sm px-4 py-3.5
+           font-inter text-sm text-orayn-navy placeholder:text-orayn-gray/50
+           focus:outline-none focus:ring-1 focus:ring-orayn-gold focus:border-orayn-gold
+           transition-all duration-200;
   }
 
   .input-error {
-    @apply border-orayn-red focus:ring-orayn-red;
+    @apply border-red-500 focus:ring-red-500;
   }
 
   .label {
-    @apply block font-inter text-sm font-semibold text-orayn-text mb-1.5;
+    @apply block font-inter text-xs font-semibold text-white/50 mb-2 uppercase tracking-wider;
   }
 
-  .section-heading {
-    @apply font-sora text-3xl md:text-4xl font-bold text-orayn-navy;
+  .label-dark {
+    @apply block font-inter text-xs font-semibold text-orayn-gray mb-2 uppercase tracking-wider;
   }
 
-  .section-subheading {
-    @apply font-inter text-base md:text-lg text-orayn-gray max-w-2xl;
+  .tag {
+    @apply inline-flex items-center px-2.5 py-1 rounded-sm
+         font-mono text-xs font-medium text-orayn-gold/80
+         border border-orayn-gold/20;
+    background-color: rgba(196, 154, 40, 0.08);
+  }
+
+  .section-eyebrow {
+    @apply font-mono text-xs font-medium text-orayn-gold uppercase tracking-[0.2em];
+  }
+
+  .rule-gold {
+    @apply w-10 h-px bg-orayn-gold;
+  }
+}
+
+/* Noise texture overlay for hero */
+.noise-overlay {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+  opacity: 0.03;
+  pointer-events: none;
+}
+
+/* Horizontal marquee for tech strip */
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.marquee-track {
+  animation: marquee 28s linear infinite;
+  will-change: transform;
+}
+
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+/* Gold line pulse */
+@keyframes pulse-gold {
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.pulse-gold {
+  animation: pulse-gold 2.4s ease-in-out infinite;
+}
+
+/* Stagger fade-in for list items — CSS only, no JS needed */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Grid background */
+.grid-bg {
+  background-image:
+    linear-gradient(rgba(196, 154, 40, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(196, 154, 40, 0.06) 1px, transparent 1px);
+  background-size: 80px 80px;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+  }
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
   }
 }

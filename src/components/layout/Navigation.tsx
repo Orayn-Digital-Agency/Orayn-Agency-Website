@@ -4,147 +4,147 @@ import { useState, useEffect, useCallback } from 'react'
 import { Menu, X } from 'lucide-react'
 
 const NAV_LINKS = [
-  { label: 'Services', href: '#services' },
-  { label: 'Pricing',  href: '#pricing' },
-  { label: 'Our Work', href: '#work' },
-  { label: 'Contact',  href: '#contact' },
+  { label: 'Services',   href: '#services'  },
+  { label: 'Work',       href: '#work'       },
+  { label: 'Pricing',    href: '#pricing'    },
+  { label: 'Process',    href: '#process'    },
+  { label: 'Contact',    href: '#contact'    },
 ] as const
 
 export default function Navigation() {
-  const [isScrolled,     setIsScrolled]     = useState(false)
-  const [isMobileOpen,   setIsMobileOpen]   = useState(false)
+  const [scrolled,    setScrolled]    = useState(false)
+  const [mobileOpen,  setMobileOpen]  = useState(false)
 
-  const handleScroll = useCallback(() => {
-    setIsScrolled(window.scrollY > 24)
-  }, [])
+  const onScroll = useCallback(() => setScrolled(window.scrollY > 32), [])
 
   useEffect(() => {
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [handleScroll])
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [onScroll])
 
-  // Prevent body scroll when mobile menu is open
   useEffect(() => {
-    if (isMobileOpen) {
-      document.body.style.overflow = 'hidden'
-    } else {
-      document.body.style.overflow = ''
-    }
+    document.body.style.overflow = mobileOpen ? 'hidden' : ''
     return () => { document.body.style.overflow = '' }
-  }, [isMobileOpen])
+  }, [mobileOpen])
 
-  const closeMobile = () => setIsMobileOpen(false)
+  const close = () => setMobileOpen(false)
 
   return (
     <>
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          isScrolled
-            ? 'bg-orayn-dark/95 backdrop-blur-sm shadow-orayn-nav'
+          scrolled
+            ? 'bg-orayn-darker/96 backdrop-blur-md border-b border-white/[0.06]'
             : 'bg-transparent'
         }`}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16 md:h-20">
-            {/* Logo */}
+        <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-10">
+          <div className="flex items-center justify-between h-[68px] md:h-20">
+
+            {/* Logotype */}
             <a
               href="#"
-              className="font-sora text-xl font-bold text-orayn-gold tracking-wide focus:outline-none focus:ring-2 focus:ring-orayn-gold focus:ring-offset-2 focus:ring-offset-orayn-dark rounded"
+              className="flex items-center gap-3 group focus:outline-none"
               aria-label="Orayn — Home"
             >
-              ORAYN
+              {/* O mark */}
+              <div className="w-7 h-7 border-2 border-orayn-gold rounded-sm flex items-center justify-center flex-shrink-0 group-hover:bg-orayn-gold transition-colors duration-200">
+                <span className="font-sora text-xs font-bold text-orayn-gold group-hover:text-orayn-dark transition-colors duration-200">O</span>
+              </div>
+              <span className="font-sora text-sm font-bold text-white tracking-[0.18em] uppercase">
+                ORAYN
+              </span>
             </a>
 
             {/* Desktop nav */}
-            <nav className="hidden md:flex items-center gap-1" aria-label="Main navigation">
+            <nav className="hidden md:flex items-center gap-0.5" aria-label="Main navigation">
               {NAV_LINKS.map((link) => (
                 <a
                   key={link.href}
                   href={link.href}
-                  className="px-4 py-2 font-inter text-sm font-medium text-white/80 hover:text-white rounded-orayn transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orayn-gold focus:ring-offset-1 focus:ring-offset-orayn-dark"
+                  className="px-4 py-2 font-inter text-sm font-medium text-white/55 hover:text-white transition-colors duration-200 focus:outline-none focus:text-orayn-gold"
                 >
                   {link.label}
                 </a>
               ))}
-              <a
-                href="#contact"
-                className="ml-4 btn-primary text-sm py-2.5 px-5"
-              >
-                Get Started
-              </a>
             </nav>
 
-            {/* Mobile hamburger */}
-            <button
-              onClick={() => setIsMobileOpen((v) => !v)}
-              className="md:hidden p-2 text-white rounded-orayn focus:outline-none focus:ring-2 focus:ring-orayn-gold"
-              aria-label={isMobileOpen ? 'Close menu' : 'Open menu'}
-              aria-expanded={isMobileOpen}
-            >
-              {isMobileOpen ? (
-                <X size={24} aria-hidden="true" />
-              ) : (
-                <Menu size={24} aria-hidden="true" />
-              )}
-            </button>
+            {/* CTA + mobile toggle */}
+            <div className="flex items-center gap-3">
+              <a
+                href="#contact"
+                className="hidden md:inline-flex btn-primary text-xs py-2.5 px-5"
+              >
+                Start a Project
+              </a>
+              <button
+                onClick={() => setMobileOpen((v) => !v)}
+                className="md:hidden p-2 text-white/70 hover:text-white transition-colors"
+                aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
+                aria-expanded={mobileOpen}
+              >
+                {mobileOpen ? <X size={22} aria-hidden="true" /> : <Menu size={22} aria-hidden="true" />}
+              </button>
+            </div>
           </div>
         </div>
       </header>
 
-      {/* Mobile drawer backdrop */}
-      {isMobileOpen && (
+      {/* Mobile backdrop */}
+      {mobileOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/60 md:hidden"
-          onClick={closeMobile}
+          className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm md:hidden"
+          onClick={close}
           aria-hidden="true"
         />
       )}
 
       {/* Mobile drawer */}
       <div
-        className={`fixed top-0 right-0 z-50 h-full w-72 bg-orayn-dark shadow-2xl transform transition-transform duration-300 ease-in-out md:hidden ${
-          isMobileOpen ? 'translate-x-0' : 'translate-x-full'
+        className={`fixed top-0 right-0 z-50 h-full w-80 bg-orayn-dark border-l border-white/[0.07] transform transition-transform duration-300 ease-out md:hidden ${
+          mobileOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
-        aria-hidden={!isMobileOpen}
         role="dialog"
         aria-modal="true"
+        aria-hidden={!mobileOpen}
         aria-label="Mobile navigation"
       >
         <div className="flex flex-col h-full">
-          {/* Drawer header */}
-          <div className="flex items-center justify-between px-6 h-16 border-b border-white/10">
-            <span className="font-sora text-lg font-bold text-orayn-gold">ORAYN</span>
+          <div className="flex items-center justify-between px-6 h-[68px] border-b border-white/[0.07]">
+            <div className="flex items-center gap-3">
+              <div className="w-6 h-6 border-2 border-orayn-gold rounded-sm flex items-center justify-center">
+                <span className="font-sora text-[10px] font-bold text-orayn-gold">O</span>
+              </div>
+              <span className="font-sora text-sm font-bold text-white tracking-[0.18em] uppercase">ORAYN</span>
+            </div>
             <button
-              onClick={closeMobile}
-              className="p-2 text-white/70 hover:text-white rounded-orayn focus:outline-none focus:ring-2 focus:ring-orayn-gold"
+              onClick={close}
+              className="p-1.5 text-white/50 hover:text-white transition-colors"
               aria-label="Close menu"
             >
               <X size={20} aria-hidden="true" />
             </button>
           </div>
 
-          {/* Drawer links */}
-          <nav className="flex flex-col gap-1 px-4 py-6" aria-label="Mobile navigation">
+          <nav className="flex flex-col px-4 py-8 gap-1" aria-label="Mobile navigation">
             {NAV_LINKS.map((link) => (
               <a
                 key={link.href}
                 href={link.href}
-                onClick={closeMobile}
-                className="px-4 py-3 font-inter text-base font-medium text-white/80 hover:text-white hover:bg-white/5 rounded-orayn transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orayn-gold"
+                onClick={close}
+                className="px-4 py-3.5 font-inter text-base font-medium text-white/70 hover:text-white hover:bg-white/[0.04] rounded-sm transition-all duration-200"
               >
                 {link.label}
               </a>
             ))}
           </nav>
 
-          {/* CTA at bottom */}
-          <div className="mt-auto px-6 pb-8">
-            <a
-              href="#contact"
-              onClick={closeMobile}
-              className="btn-primary w-full text-center text-sm"
-            >
-              Get Started
+          <div className="mt-auto px-6 pb-10 flex flex-col gap-3">
+            <a href="mailto:temidaniel124@gmail.com" onClick={close} className="font-inter text-xs text-white/35 hover:text-orayn-gold transition-colors text-center">
+              temidaniel124@gmail.com
+            </a>
+            <a href="#contact" onClick={close} className="btn-primary w-full text-center text-xs">
+              Start a Project
             </a>
           </div>
         </div>

@@ -1,202 +1,186 @@
-'use client'
-
-import { motion } from 'framer-motion'
 import { Check } from 'lucide-react'
 
 const TIERS = [
   {
-    name:        'Starter',
-    price:       '200,000 – 300,000',
-    currency:    'NGN',
-    description: 'Professional web presence for independent tradespeople and small shops.',
-    inclusions: [
+    name: 'Starter',
+    priceRange: '₦200,000 – ₦300,000',
+    tagline: 'For local businesses getting online for the first time.',
+    features: [
       '5-page custom website',
       'Mobile-first responsive design',
-      'Contact form with WhatsApp button',
-      'Basic on-page SEO setup',
-      'Google Maps embed',
-      'Vercel deployment included',
-    ],
-    bestFor:     'Plumbers, artisans, electricians, small shops',
-    featured:    false,
-    cta:         'Get Started',
-  },
-  {
-    name:        'Business',
-    price:       '350,000 – 500,000',
-    currency:    'NGN',
-    description: 'A complete digital presence for established businesses with real online needs.',
-    inclusions: [
-      'Up to 10 pages',
-      'Photo gallery & media showcase',
-      'Booking or inquiry form',
+      'Contact form with email delivery',
       'WhatsApp chat integration',
       'Google Maps embed',
-      'Mobile-first responsive design',
-      'Basic on-page SEO setup',
+      'Basic on-page SEO',
+      'Vercel hosting setup',
+      '30-day post-launch support',
     ],
-    bestFor:     'Restaurants, salons, hotels, clinics',
-    featured:    true,
-    cta:         'Get Started',
+    highlight: false,
+    cta: 'Enquire — Starter',
   },
   {
-    name:        'Premium',
-    price:       '600,000 – 1,000,000',
-    currency:    'NGN',
-    description: 'Advanced functionality for multi-branch businesses and complex operations.',
-    inclusions: [
-      'Blog or news section',
-      'Product or service listings',
+    name: 'Business',
+    priceRange: '₦350,000 – ₦500,000',
+    tagline: 'For established SMEs that need a serious digital presence.',
+    features: [
+      'Up to 10-page website',
+      'Gallery / portfolio section',
+      'Booking or inquiry form',
+      'Instagram / social feed integration',
+      'Advanced SEO and Open Graph',
+      'Google Analytics integration',
+      'Custom animations and transitions',
+      '30-day post-launch support',
+    ],
+    highlight: true,
+    cta: 'Enquire — Business',
+  },
+  {
+    name: 'Premium',
+    priceRange: '₦600,000 – ₦1,000,000',
+    tagline: 'For businesses that need a full platform with custom logic.',
+    features: [
+      'Unlimited pages',
+      'Blog with CMS or markdown',
       'Booking or reservation system',
-      'Admin inquiry panel',
-      'Custom third-party integrations',
-      'Everything in Business tier',
+      'Admin management panel',
+      'Multiple user roles',
+      'Payment integration (Paystack)',
+      'Custom API integrations',
+      '60-day post-launch support',
     ],
-    bestFor:     'Real estate agencies, schools, multi-branch businesses',
-    featured:    false,
-    cta:         'Get Started',
+    highlight: false,
+    cta: 'Enquire — Premium',
   },
   {
-    name:        'Platform',
-    price:       '1,500,000+',
-    currency:    'NGN',
-    description: 'Full-scale digital systems — portals, dashboards, payment flows, and databases.',
-    inclusions: [
-      'Full backend architecture',
-      'Database design & setup',
-      'User authentication & portals',
-      'Payment gateway integration',
-      'Custom admin dashboards',
-      'Milestone-based delivery',
-      'Scoped and quoted per project',
+    name: 'Platform',
+    priceRange: '₦1,500,000+',
+    tagline: 'Full SaaS, mobile app, or automation — quoted per project.',
+    features: [
+      'Full-stack SaaS application',
+      'Mobile app (iOS + Android)',
+      'Custom database architecture',
+      'Role-based access control',
+      'Paystack or Flutterwave integration',
+      'Admin and user dashboards',
+      'n8n automation pipelines',
+      'Dedicated project manager',
     ],
-    bestFor:     'Universities, restaurant platforms, delivery systems, fintech',
-    featured:    false,
-    cta:         'Request a Quote',
+    highlight: false,
+    cta: 'Request a Quote',
   },
+] as const
+
+const PAYMENT_NOTES = [
+  { label: '60% upfront', desc: 'Paid before build begins. Triggers the project start.' },
+  { label: '40% on delivery', desc: 'Paid after you review and approve the final result.' },
+  { label: '7 business days', desc: 'Standard delivery window from payment confirmation.' },
+  { label: 'Source code included', desc: 'Full repository access. No lock-in. It is yours.' },
 ] as const
 
 export default function PricingSection() {
   return (
-    <section id="pricing" className="py-24 bg-orayn-light" aria-label="Pricing">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <motion.div
-          className="text-center max-w-2xl mx-auto"
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-60px' }}
-          transition={{ duration: 0.55 }}
-        >
-          <span className="font-inter text-xs font-semibold text-orayn-gold uppercase tracking-widest">
-            Transparent Pricing
-          </span>
-          <h2 className="mt-3 section-heading">
-            No Hidden Fees. No Surprises.
-          </h2>
-          <p className="mt-4 section-subheading mx-auto">
-            All prices are in Nigerian Naira. You pay 60% upfront to begin and 40% on delivery. You review the demo for free before committing to anything.
-          </p>
-        </motion.div>
+    <section id="pricing" className="relative bg-orayn-darker py-28 lg:py-36">
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" aria-hidden="true" />
 
-        {/* Tier cards */}
-        <div className="mt-14 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 items-start">
-          {TIERS.map((tier, i) => (
-            <motion.div
-              key={tier.name}
-              initial={{ opacity: 0, y: 32 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-60px' }}
-              transition={{ duration: 0.55, delay: i * 0.09 }}
-              className={`relative flex flex-col rounded-orayn-card p-6 shadow-orayn-card transition-shadow duration-300 hover:shadow-lg ${
-                tier.featured
-                  ? 'bg-orayn-navy border-2 border-orayn-gold'
-                  : 'bg-white border border-orayn-mid'
-              }`}
+      <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-10">
+
+        {/* Header */}
+        <div className="max-w-2xl mb-16">
+          <div className="flex items-center gap-3 mb-5">
+            <div className="w-5 h-px bg-orayn-gold" aria-hidden="true" />
+            <span className="section-eyebrow">Investment</span>
+          </div>
+          <h2 className="font-sora text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight mb-5">
+            Transparent Pricing.{' '}
+            <span className="text-orayn-gold">No Hidden Costs.</span>
+          </h2>
+          <p className="font-inter text-base text-white/50 leading-relaxed">
+            Every tier is a fixed price range. You know what you are paying before
+            work begins. No scope creep surprises. No hourly billing.
+          </p>
+        </div>
+
+        {/* Pricing grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5 mb-14">
+          {TIERS.map(({ name, priceRange, tagline, features, highlight, cta }) => (
+            <div
+              key={name}
+              className={`relative flex flex-col rounded-orayn-card p-7 border transition-all duration-300
+                ${highlight
+                  ? 'bg-orayn-gold/[0.07] border-orayn-gold/40 shadow-gold-glow'
+                  : 'bg-white/[0.025] border-white/[0.07] hover:border-white/[0.14]'
+                }`}
             >
-              {/* Most Popular badge */}
-              {tier.featured && (
-                <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
-                  <span className="px-4 py-1 bg-orayn-gold rounded-full font-inter text-xs font-bold text-orayn-dark uppercase tracking-widest whitespace-nowrap">
+              {/* Popular badge */}
+              {highlight && (
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                  <span className="inline-block bg-orayn-gold text-orayn-dark font-inter text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-sm">
                     Most Popular
                   </span>
                 </div>
               )}
 
               {/* Tier name */}
-              <div className={`font-inter text-xs font-bold uppercase tracking-widest ${tier.featured ? 'text-orayn-gold' : 'text-orayn-gold'}`}>
-                {tier.name}
+              <div className="flex items-center gap-2 mb-2">
+                <span className="font-mono text-[10px] text-orayn-gold/60 uppercase tracking-widest border-b border-orayn-gold/20">
+                  {name}
+                </span>
               </div>
 
               {/* Price */}
-              <div className="mt-2">
-                <span className={`font-inter text-xs font-semibold ${tier.featured ? 'text-white/60' : 'text-orayn-gray'}`}>
-                  {tier.currency}&nbsp;
-                </span>
-                <span className={`font-sora text-2xl font-bold ${tier.featured ? 'text-white' : 'text-orayn-navy'}`}>
-                  {tier.price}
-                </span>
+              <div className="mb-4">
+                <p className="font-sora text-lg font-bold text-white leading-tight">{priceRange}</p>
+                <p className="font-inter text-xs text-white/35 mt-1 leading-relaxed">{tagline}</p>
               </div>
 
-              {/* Description */}
-              <p className={`mt-3 font-inter text-sm leading-relaxed ${tier.featured ? 'text-white/70' : 'text-orayn-gray'}`}>
-                {tier.description}
-              </p>
-
               {/* Divider */}
-              <div className={`my-5 h-px ${tier.featured ? 'bg-white/10' : 'bg-orayn-mid'}`} />
+              <div className={`h-px mb-6 ${highlight ? 'bg-orayn-gold/20' : 'bg-white/[0.07]'}`} aria-hidden="true" />
 
-              {/* Inclusions */}
-              <ul className="flex flex-col gap-2.5 flex-1">
-                {tier.inclusions.map((item) => (
-                  <li key={item} className="flex items-start gap-2.5">
+              {/* Features */}
+              <ul className="flex flex-col gap-2.5 flex-1 mb-7">
+                {features.map((f) => (
+                  <li key={f} className="flex items-start gap-2.5">
                     <Check
-                      size={14}
-                      className={`mt-0.5 flex-shrink-0 ${tier.featured ? 'text-orayn-gold' : 'text-orayn-green'}`}
+                      size={13}
+                      className={`flex-shrink-0 mt-0.5 ${highlight ? 'text-orayn-gold' : 'text-orayn-gold/60'}`}
                       aria-hidden="true"
                     />
-                    <span className={`font-inter text-sm ${tier.featured ? 'text-white/80' : 'text-orayn-text'}`}>
-                      {item}
-                    </span>
+                    <span className="font-inter text-xs text-white/55 leading-relaxed">{f}</span>
                   </li>
                 ))}
               </ul>
 
-              {/* Best for */}
-              <div className={`mt-5 pt-4 border-t ${tier.featured ? 'border-white/10' : 'border-orayn-mid'}`}>
-                <span className={`font-inter text-xs ${tier.featured ? 'text-white/40' : 'text-orayn-gray'}`}>
-                  Best for:&nbsp;
-                </span>
-                <span className={`font-inter text-xs font-semibold ${tier.featured ? 'text-white/70' : 'text-orayn-navy'}`}>
-                  {tier.bestFor}
-                </span>
-              </div>
-
               {/* CTA */}
               <a
                 href="#contact"
-                className={`mt-5 block text-center py-3 px-6 rounded-orayn font-inter text-sm font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
-                  tier.featured
-                    ? 'bg-orayn-gold text-orayn-dark hover:bg-yellow-400 focus:ring-orayn-gold'
-                    : 'bg-orayn-navy text-white hover:bg-orayn-dark focus:ring-orayn-navy'
+                className={`w-full text-center block py-3 px-4 rounded-sm font-inter text-xs font-bold uppercase tracking-wide transition-all duration-200 ${
+                  highlight
+                    ? 'bg-orayn-gold text-orayn-dark hover:bg-yellow-400'
+                    : 'bg-white/[0.06] text-white/70 border border-white/10 hover:bg-white/[0.1] hover:text-white'
                 }`}
               >
-                {tier.cta}
+                {cta}
               </a>
-            </motion.div>
+            </div>
           ))}
         </div>
 
-        {/* Payment note */}
-        <motion.p
-          className="mt-10 text-center font-inter text-sm text-orayn-gray"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.2 }}
-        >
-          All projects follow a 60% upfront / 40% on delivery payment model. Annual maintenance plans available at 20–25% of your project price per year.
-        </motion.p>
+        {/* Payment terms strip */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {PAYMENT_NOTES.map(({ label, desc }) => (
+            <div key={label} className="flex flex-col gap-1.5 p-5 bg-white/[0.02] border border-white/[0.06] rounded-orayn">
+              <span className="font-sora text-sm font-bold text-orayn-gold">{label}</span>
+              <span className="font-inter text-xs text-white/40 leading-relaxed">{desc}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* Custom project note */}
+        <p className="mt-8 font-inter text-xs text-white/25 text-center">
+          Not sure which tier fits? Describe your project in the contact form and we will recommend the right scope.
+          Custom quotes are issued free of charge within 24 hours.
+        </p>
       </div>
     </section>
   )
