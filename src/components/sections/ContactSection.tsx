@@ -45,8 +45,8 @@ const CONTACT_DETAILS = [
   {
     Icon: Phone,
     label: "WhatsApp",
-    value: "+234 812 312 1554",
-    href: "https://wa.me/2348123121554",
+    value: "+234 912 459 5511",
+    href: "https://wa.me/2349124595511",
   },
   {
     Icon: MapPin,
@@ -346,7 +346,7 @@ export default function ContactSection() {
                     id="phone"
                     name="phone"
                     autoComplete="tel"
-                    placeholder="+234 812 312 1554"
+                    placeholder="+234 912 459 5511"
                     className="input-field"
                   />
                 </div>
@@ -512,7 +512,7 @@ export default function ContactSection() {
 
             {/* WhatsApp shortcut */}
             <a
-              href="https://wa.me/2348123121554?text=Hello%2C%20I%20would%20like%20to%20enquire%20about%20a%20project%20with%20Orayn."
+              href="https://wa.me/2349124595511?text=Hello%2C%20I%20would%20like%20to%20enquire%20about%20a%20project%20with%20Orayn."
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center justify-between gap-4 p-5 bg-white/[0.025] border border-white/[0.07] rounded-orayn hover:border-orayn-gold/25 hover:bg-white/[0.04] transition-all duration-200 group"
