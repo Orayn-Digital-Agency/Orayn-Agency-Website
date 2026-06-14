@@ -1,6 +1,12 @@
 "use client";
 
-import { useActionState, useRef, useEffect, useState } from "react";
+import {
+  useActionState,
+  useRef,
+  useEffect,
+  useState,
+  useCallback,
+} from "react";
 import {
   Mail,
   Phone,
@@ -48,15 +54,10 @@ const CONTACT_DETAILS = [
     value: "+234 912 459 5511",
     href: "https://wa.me/2349124595511",
   },
-  {
-    Icon: MapPin,
-    label: "Location",
-    value: "Lagos, Nigeria",
-    href: null,
-  },
+  { Icon: MapPin, label: "Location", value: "Lagos, Nigeria", href: null },
 ] as const;
 
-// ── Custom Select Component ──────────────────────────────────────────────────
+// ── Custom Select — touch-safe ───────────────────────────────────────────────
 function CustomSelect({
   id,
   name,
@@ -73,53 +74,83 @@ function CustomSelect({
   onChange: (v: string) => void;
 }) {
   const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  // Close on outside click
+  // Close on outside interaction — handles both mouse and touch
   useEffect(() => {
-    function handler(e: MouseEvent) {
-      if (ref.current && !ref.current.contains(e.target as Node)) {
+    const handler = (e: Event) => {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(e.target as Node)
+      ) {
         setOpen(false);
       }
-    }
+    };
     document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
+    document.addEventListener("touchstart", handler, { passive: true });
+    return () => {
+      document.removeEventListener("mousedown", handler);
+      document.removeEventListener("touchstart", handler);
+    };
   }, []);
 
-  // Close on Escape
   useEffect(() => {
-    function handler(e: KeyboardEvent) {
+    const handler = (e: KeyboardEvent) => {
       if (e.key === "Escape") setOpen(false);
-    }
+    };
     document.addEventListener("keydown", handler);
     return () => document.removeEventListener("keydown", handler);
   }, []);
 
-  const selected = value || null;
+  const handleToggle = useCallback((e: React.MouseEvent | React.TouchEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setOpen((v) => !v);
+  }, []);
+
+  const handleSelect = useCallback(
+    (e: React.MouseEvent | React.TouchEvent, opt: string) => {
+      e.preventDefault();
+      e.stopPropagation();
+      onChange(opt);
+      setOpen(false);
+    },
+    [onChange],
+  );
 
   return (
-    <div ref={ref} className="relative">
-      {/* Hidden real input for form submission */}
+    <div
+      ref={containerRef}
+      className="relative"
+      style={{ WebkitTapHighlightColor: "transparent" }}
+    >
+      {/* Hidden input carries the value into the form */}
       <input type="hidden" name={name} value={value} />
 
-      {/* Trigger button */}
+      {/* Trigger */}
       <button
         type="button"
         id={id}
-        onClick={() => setOpen((v) => !v)}
+        onTouchEnd={handleToggle}
+        onClick={handleToggle}
         aria-haspopup="listbox"
         aria-expanded={open}
-        className={`w-full flex items-center justify-between gap-3 px-4 py-3.5
+        className={`w-full flex items-center justify-between gap-3 px-4 py-4
           bg-white/5 border rounded-sm font-inter text-sm text-left
           focus:outline-none focus:ring-1 focus:ring-orayn-gold focus:border-orayn-gold
-          transition-all duration-200
-          ${open ? "border-orayn-gold" : "border-white/10 hover:border-white/20"}
-          ${selected ? "text-white" : "text-white/30"}`}
+          transition-all duration-200 touch-manipulation
+          ${open ? "border-orayn-gold" : "border-white/10"}
+          ${value ? "text-white" : "text-white/30"}`}
+        style={{
+          cursor: "pointer",
+          minHeight: "52px",
+          WebkitTapHighlightColor: "transparent",
+        }}
       >
-        <span className="truncate">{selected ?? placeholder}</span>
+        <span className="truncate">{value || placeholder}</span>
         <ChevronDown
           size={15}
-          className={`flex-shrink-0 text-white/30 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+          className={`flex-shrink-0 text-white/40 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
           aria-hidden="true"
         />
       </button>
@@ -129,9 +160,14 @@ function CustomSelect({
         <div
           role="listbox"
           aria-label={placeholder}
-          className="absolute z-50 top-full left-0 right-0 mt-1
-            bg-orayn-dark border border-white/10 rounded-sm shadow-card-dark
-            py-1 max-h-60 overflow-y-auto"
+          className="absolute z-[60] top-full left-0 right-0 mt-1
+            border border-white/10 rounded-sm shadow-card-dark
+            py-1 overflow-y-auto"
+          style={{
+            backgroundColor: "#0F1B2D",
+            maxHeight: "240px",
+            WebkitOverflowScrolling: "touch",
+          }}
         >
           {options.map((opt) => {
             const isSelected = value === opt;
@@ -141,19 +177,23 @@ function CustomSelect({
                 type="button"
                 role="option"
                 aria-selected={isSelected}
-                onClick={() => {
-                  onChange(opt);
-                  setOpen(false);
+                onTouchEnd={(e) => handleSelect(e, opt)}
+                onClick={(e) => handleSelect(e, opt)}
+                className="w-full flex items-center justify-between gap-3 px-4 text-left
+                  font-inter text-sm transition-colors duration-150 touch-manipulation"
+                style={{
+                  cursor: "pointer",
+                  minHeight: "48px",
+                  paddingTop: "12px",
+                  paddingBottom: "12px",
+                  backgroundColor: isSelected
+                    ? "rgba(196,154,40,0.10)"
+                    : "transparent",
+                  color: isSelected ? "#C49A28" : "rgba(255,255,255,0.70)",
+                  WebkitTapHighlightColor: "transparent",
                 }}
-                className={`w-full flex items-center justify-between gap-3 px-4 py-3
-                  font-inter text-sm text-left transition-colors duration-150
-                  ${
-                    isSelected
-                      ? "bg-orayn-gold/10 text-orayn-gold"
-                      : "text-white/70 hover:bg-white/[0.06] hover:text-white"
-                  }`}
               >
-                <span>{opt}</span>
+                <span className="leading-snug">{opt}</span>
                 {isSelected && (
                   <Check
                     size={13}
@@ -197,7 +237,6 @@ export default function ContactSection() {
         aria-hidden="true"
       />
 
-      {/* Background glow */}
       <div
         className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] pointer-events-none"
         style={{
@@ -225,7 +264,7 @@ export default function ContactSection() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-10 lg:gap-14">
-          {/* ── Form ── */}
+          {/* Form */}
           <div>
             {state.success ? (
               <div className="flex flex-col items-center justify-center py-20 gap-5 text-center">
@@ -248,7 +287,8 @@ export default function ContactSection() {
                 <button
                   type="button"
                   onClick={() => window.location.reload()}
-                  className="btn-outline text-xs"
+                  className="btn-outline text-xs touch-manipulation"
+                  style={{ WebkitTapHighlightColor: "transparent" }}
                 >
                   Send Another Message
                 </button>
@@ -260,7 +300,6 @@ export default function ContactSection() {
                 noValidate
                 className="flex flex-col gap-5"
               >
-                {/* Global error */}
                 {state.error && !state.success && (
                   <div
                     role="alert"
@@ -290,14 +329,10 @@ export default function ContactSection() {
                       required
                       autoComplete="name"
                       placeholder="Adebayo Temiloluwa"
-                      aria-describedby={
-                        fieldError("name") ? "name-error" : undefined
-                      }
                       className={`input-field ${fieldError("name") ? "input-error" : ""}`}
                     />
                     {fieldError("name") && (
                       <p
-                        id="name-error"
                         role="alert"
                         className="mt-1.5 font-inter text-xs text-red-400"
                       >
@@ -316,14 +351,10 @@ export default function ContactSection() {
                       required
                       autoComplete="email"
                       placeholder="you@company.com"
-                      aria-describedby={
-                        fieldError("email") ? "email-error" : undefined
-                      }
                       className={`input-field ${fieldError("email") ? "input-error" : ""}`}
                     />
                     {fieldError("email") && (
                       <p
-                        id="email-error"
                         role="alert"
                         className="font-inter text-xs text-red-400 mt-1.5"
                       >
@@ -351,7 +382,7 @@ export default function ContactSection() {
                   />
                 </div>
 
-                {/* Service + Budget — custom selects */}
+                {/* Service + Budget — touch-safe custom selects */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div>
                     <label htmlFor="service-select" className="label">
@@ -392,14 +423,10 @@ export default function ContactSection() {
                     required
                     rows={5}
                     placeholder="Describe your business, what you need, and any specific features or requirements. The more detail you provide, the more accurate the quote."
-                    aria-describedby={
-                      fieldError("message") ? "message-error" : undefined
-                    }
                     className={`input-field resize-none leading-relaxed ${fieldError("message") ? "input-error" : ""}`}
                   />
                   {fieldError("message") && (
                     <p
-                      id="message-error"
                       role="alert"
                       className="font-inter text-xs text-red-400 mt-1.5"
                     >
@@ -412,7 +439,8 @@ export default function ContactSection() {
                 <button
                   type="submit"
                   disabled={pending}
-                  className="btn-primary self-start gap-2.5"
+                  className="btn-primary self-start gap-2.5 touch-manipulation"
+                  style={{ WebkitTapHighlightColor: "transparent" }}
                 >
                   {pending ? (
                     <>
@@ -438,16 +466,21 @@ export default function ContactSection() {
             )}
           </div>
 
-          {/* ── Right column ── */}
+          {/* Right column */}
           <div className="flex flex-col gap-6">
-            {/* Contact details */}
             <div className="flex flex-col gap-3">
               {CONTACT_DETAILS.map(({ Icon, label, value, href }) => (
                 <div
                   key={label}
                   className="flex items-start gap-4 p-5 bg-white/[0.025] border border-white/[0.07] rounded-orayn group"
                 >
-                  <div className="flex-shrink-0 w-10 h-10 rounded-sm bg-orayn-gold/10 border border-orayn-gold/20 flex items-center justify-center group-hover:bg-orayn-gold/15 transition-colors duration-200">
+                  <div
+                    className="flex-shrink-0 w-10 h-10 rounded-sm flex items-center justify-center"
+                    style={{
+                      backgroundColor: "rgba(196,154,40,0.10)",
+                      border: "1px solid rgba(196,154,40,0.20)",
+                    }}
+                  >
                     <Icon
                       size={16}
                       className="text-orayn-gold"
@@ -467,7 +500,8 @@ export default function ContactSection() {
                             ? "noopener noreferrer"
                             : undefined
                         }
-                        className="font-inter text-sm text-white hover:text-orayn-gold transition-colors duration-200 break-all"
+                        className="font-inter text-sm text-white hover:text-orayn-gold transition-colors duration-200 break-all touch-manipulation"
+                        style={{ WebkitTapHighlightColor: "transparent" }}
                       >
                         {value}
                       </a>
@@ -515,10 +549,17 @@ export default function ContactSection() {
               href="https://wa.me/2349124595511?text=Hello%2C%20I%20would%20like%20to%20enquire%20about%20a%20project%20with%20Orayn."
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-between gap-4 p-5 bg-white/[0.025] border border-white/[0.07] rounded-orayn hover:border-orayn-gold/25 hover:bg-white/[0.04] transition-all duration-200 group"
+              className="flex items-center justify-between gap-4 p-5 bg-white/[0.025] border border-white/[0.07] rounded-orayn hover:border-orayn-gold/25 hover:bg-white/[0.04] transition-all duration-200 group touch-manipulation"
+              style={{ WebkitTapHighlightColor: "transparent" }}
             >
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-sm bg-green-900/40 border border-green-700/30 flex items-center justify-center flex-shrink-0">
+                <div
+                  className="w-10 h-10 rounded-sm flex items-center justify-center flex-shrink-0"
+                  style={{
+                    backgroundColor: "rgba(20,83,45,0.4)",
+                    border: "1px solid rgba(21,128,61,0.3)",
+                  }}
+                >
                   <svg
                     width="18"
                     height="18"
