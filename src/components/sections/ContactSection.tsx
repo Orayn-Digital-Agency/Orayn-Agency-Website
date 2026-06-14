@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useRef, useEffect } from "react";
+import { useActionState, useRef, useEffect, useState } from "react";
 import {
   Mail,
   Phone,
@@ -8,6 +8,8 @@ import {
   Send,
   CheckCircle,
   AlertCircle,
+  ChevronDown,
+  Check,
 } from "lucide-react";
 import { submitContactForm, type ContactFormState } from "@/app/actions";
 
@@ -43,8 +45,8 @@ const CONTACT_DETAILS = [
   {
     Icon: Phone,
     label: "WhatsApp",
-    value: "+234 912 459 5511",
-    href: "https://wa.me/2349124595511",
+    value: "+234 812 312 1554",
+    href: "https://wa.me/2348123121554",
   },
   {
     Icon: MapPin,
@@ -54,16 +56,135 @@ const CONTACT_DETAILS = [
   },
 ] as const;
 
+// ── Custom Select Component ──────────────────────────────────────────────────
+function CustomSelect({
+  id,
+  name,
+  placeholder,
+  options,
+  value,
+  onChange,
+}: {
+  id: string;
+  name: string;
+  placeholder: string;
+  options: readonly string[];
+  value: string;
+  onChange: (v: string) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  // Close on outside click
+  useEffect(() => {
+    function handler(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  // Close on Escape
+  useEffect(() => {
+    function handler(e: KeyboardEvent) {
+      if (e.key === "Escape") setOpen(false);
+    }
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
+  }, []);
+
+  const selected = value || null;
+
+  return (
+    <div ref={ref} className="relative">
+      {/* Hidden real input for form submission */}
+      <input type="hidden" name={name} value={value} />
+
+      {/* Trigger button */}
+      <button
+        type="button"
+        id={id}
+        onClick={() => setOpen((v) => !v)}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        className={`w-full flex items-center justify-between gap-3 px-4 py-3.5
+          bg-white/5 border rounded-sm font-inter text-sm text-left
+          focus:outline-none focus:ring-1 focus:ring-orayn-gold focus:border-orayn-gold
+          transition-all duration-200
+          ${open ? "border-orayn-gold" : "border-white/10 hover:border-white/20"}
+          ${selected ? "text-white" : "text-white/30"}`}
+      >
+        <span className="truncate">{selected ?? placeholder}</span>
+        <ChevronDown
+          size={15}
+          className={`flex-shrink-0 text-white/30 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+          aria-hidden="true"
+        />
+      </button>
+
+      {/* Dropdown panel */}
+      {open && (
+        <div
+          role="listbox"
+          aria-label={placeholder}
+          className="absolute z-50 top-full left-0 right-0 mt-1
+            bg-orayn-dark border border-white/10 rounded-sm shadow-card-dark
+            py-1 max-h-60 overflow-y-auto"
+        >
+          {options.map((opt) => {
+            const isSelected = value === opt;
+            return (
+              <button
+                key={opt}
+                type="button"
+                role="option"
+                aria-selected={isSelected}
+                onClick={() => {
+                  onChange(opt);
+                  setOpen(false);
+                }}
+                className={`w-full flex items-center justify-between gap-3 px-4 py-3
+                  font-inter text-sm text-left transition-colors duration-150
+                  ${
+                    isSelected
+                      ? "bg-orayn-gold/10 text-orayn-gold"
+                      : "text-white/70 hover:bg-white/[0.06] hover:text-white"
+                  }`}
+              >
+                <span>{opt}</span>
+                {isSelected && (
+                  <Check
+                    size={13}
+                    className="flex-shrink-0 text-orayn-gold"
+                    aria-hidden="true"
+                  />
+                )}
+              </button>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── Main Component ───────────────────────────────────────────────────────────
 export default function ContactSection() {
   const [state, formAction, pending] = useActionState(
     submitContactForm,
     INITIAL_STATE,
   );
   const formRef = useRef<HTMLFormElement>(null);
+  const [service, setService] = useState("");
+  const [budget, setBudget] = useState("");
 
   useEffect(() => {
     if (state.success && formRef.current) {
       formRef.current.reset();
+      setService("");
+      setBudget("");
     }
   }, [state.success]);
 
@@ -104,9 +225,8 @@ export default function ContactSection() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-10 lg:gap-14">
-          {/* Form */}
+          {/* ── Form ── */}
           <div>
-            {/* Success state */}
             {state.success ? (
               <div className="flex flex-col items-center justify-center py-20 gap-5 text-center">
                 <div className="w-16 h-16 rounded-full bg-orayn-gold/10 border border-orayn-gold/30 flex items-center justify-center">
@@ -226,52 +346,38 @@ export default function ContactSection() {
                     id="phone"
                     name="phone"
                     autoComplete="tel"
-                    placeholder="+234 912 459 5511"
+                    placeholder="+234 812 312 1554"
                     className="input-field"
                   />
                 </div>
 
-                {/* Service + Budget */}
+                {/* Service + Budget — custom selects */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div>
-                    <label htmlFor="service" className="label">
+                    <label htmlFor="service-select" className="label">
                       Service Type
                     </label>
-                    <select
-                      id="service"
+                    <CustomSelect
+                      id="service-select"
                       name="service"
-                      defaultValue=""
-                      className="input-field"
-                    >
-                      <option value="" disabled>
-                        Select a service...
-                      </option>
-                      {SERVICES.map((s) => (
-                        <option key={s} value={s}>
-                          {s}
-                        </option>
-                      ))}
-                    </select>
+                      placeholder="Select a service..."
+                      options={SERVICES}
+                      value={service}
+                      onChange={setService}
+                    />
                   </div>
                   <div>
-                    <label htmlFor="budget" className="label">
+                    <label htmlFor="budget-select" className="label">
                       Budget Range
                     </label>
-                    <select
-                      id="budget"
+                    <CustomSelect
+                      id="budget-select"
                       name="budget"
-                      defaultValue=""
-                      className="input-field"
-                    >
-                      <option value="" disabled>
-                        Select a budget...
-                      </option>
-                      {BUDGETS.map((b) => (
-                        <option key={b} value={b}>
-                          {b}
-                        </option>
-                      ))}
-                    </select>
+                      placeholder="Select a budget..."
+                      options={BUDGETS}
+                      value={budget}
+                      onChange={setBudget}
+                    />
                   </div>
                 </div>
 
@@ -332,7 +438,7 @@ export default function ContactSection() {
             )}
           </div>
 
-          {/* Right column — contact info + trust signals */}
+          {/* ── Right column ── */}
           <div className="flex flex-col gap-6">
             {/* Contact details */}
             <div className="flex flex-col gap-3">
@@ -374,7 +480,10 @@ export default function ContactSection() {
             </div>
 
             {/* Trust block */}
-            <div className="flex flex-col gap-4 p-6 bg-orayn-gold/[0.04] border border-orayn-gold/15 rounded-orayn">
+            <div
+              className="flex flex-col gap-4 p-6 border border-orayn-gold/15 rounded-orayn"
+              style={{ backgroundColor: "rgba(196,154,40,0.04)" }}
+            >
               <div className="w-6 h-px bg-orayn-gold/60" aria-hidden="true" />
               <h4 className="font-sora text-base font-bold text-white">
                 What to Expect
@@ -403,7 +512,7 @@ export default function ContactSection() {
 
             {/* WhatsApp shortcut */}
             <a
-              href="https://wa.me/2349124595511?text=Hello%2C%20I%20would%20like%20to%20enquire%20about%20a%20project%20with%20Orayn."
+              href="https://wa.me/2348123121554?text=Hello%2C%20I%20would%20like%20to%20enquire%20about%20a%20project%20with%20Orayn."
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center justify-between gap-4 p-5 bg-white/[0.025] border border-white/[0.07] rounded-orayn hover:border-orayn-gold/25 hover:bg-white/[0.04] transition-all duration-200 group"
